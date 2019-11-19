@@ -21,10 +21,25 @@ namespace TestAdminServer
         Socket socket;
         int port = 7412;
         bool isServerWork;
+        Staff loginPerson;
         List<User> users = new List<User>();
+        
         public MainForm()
         {
+
+            LoginForm loginForm = new LoginForm();
+            loginForm.ShowDialog();
+            loginPerson = loginForm.person;
+
             InitializeComponent();
+            if (loginPerson == null)
+                this.Close();
+            else
+            {
+                loginPerson = loginForm.person;
+                labelWhoIs.Text = $"{loginPerson.Name} - {loginPerson.Login} - ";
+                FillPermit();
+            }
             if (!NetworkInterface.GetIsNetworkAvailable())
                 MessageBox.Show("Немає підключення");
 
@@ -32,7 +47,23 @@ namespace TestAdminServer
             
             
         }
+        //написання дозволів
+        void FillPermit()
+        {
+            switch (loginPerson.Status)
+            {
+                case 1:
+                    comboBoxAct.Items.Add("Delete smn from DB");
+                    comboBoxAct.Items.Add("Add student to DB");
+                    comboBoxAct.Items.Add("Show smth");
+                    break;
+                case 2:
+                    comboBoxAct.Items.Add("Send test to");
+                    break;
+            }
+            comboBoxAct.Items.Add("Add test to DB");
 
+        }
         private void buttonStartServer_Click(object sender, EventArgs e)
         {
             if (socket == null)
@@ -115,6 +146,50 @@ namespace TestAdminServer
                 //string error = se.Message;
                 //labelListError.Text += $"{error}\n";
                 MessageBox.Show(se.Message);
+            }
+        }
+
+        private void comboBoxAct_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string act = comboBoxAct.SelectedItem.ToString();
+
+            switch (act)
+            {
+                case "Add test to DB":
+                    {
+                        OpenFileDialog file = new OpenFileDialog();
+                        file.ShowDialog();
+
+                        string xmlTest = File.ReadAllText(file.FileName);
+                        var time = DateTime.Now;
+                        using (ExamVceDB test = new ExamVceDB())
+                        {
+                            test.TestDBs.Add(new TestDB()
+                            {
+                                IdFromPerson = loginPerson.ID,
+                                Test = xmlTest,
+                                DateLoad = time
+                            });
+                            //test.SaveChanges();
+                        }
+                        break;
+                    }
+                case "Send test to":
+                    {
+
+                        break;
+                    }
+                case "Add student to DB":
+                    {
+                        AddStudentToDB addStudent = new AddStudentToDB();
+                        addStudent.ShowDialog();
+                        break;
+                    }
+            }
+
+            if(comboBoxAct.SelectedItem.Equals("Add test to DB"))
+            {
+                
             }
         }
         //void FunctionForSwich(TransferInfo info, string recive, UserDB client)
