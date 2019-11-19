@@ -60,6 +60,7 @@
             this.buttonLogin.TabIndex = 4;
             this.buttonLogin.Text = "Login";
             this.buttonLogin.UseVisualStyleBackColor = false;
+            this.buttonLogin.Click += new System.EventHandler(this.ButtonLogin_Click);
             // 
             // textBoxPassword
             // 
@@ -109,7 +110,7 @@
             this.pictureBoxBackground.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxBackground.Image")));
             this.pictureBoxBackground.Location = new System.Drawing.Point(1, -1);
             this.pictureBoxBackground.Name = "pictureBoxBackground";
-            this.pictureBoxBackground.Size = new System.Drawing.Size(395, 294);
+            this.pictureBoxBackground.Size = new System.Drawing.Size(395, 296);
             this.pictureBoxBackground.TabIndex = 9;
             this.pictureBoxBackground.TabStop = false;
             // 

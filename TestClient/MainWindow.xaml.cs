@@ -32,31 +32,28 @@ namespace TestClient
         List<List<TypeQuestion>> typeQuestions = new List<List<TypeQuestion>>();
 
         Socket server;
-        string ipAddressServer = "192.168.43.175";
+        string ipAddressServer = "192.168.23.1";
         int port = 7412;
 
         User Iam;
         public MainWindow()
         {
             
-            LoginForm loginForm = new LoginForm();
-            loginForm.ShowDialog();
+            //LoginForm loginForm = new LoginForm();
+            //loginForm.ShowDialog();
             InitializeComponent();
 
-            //if (Iam == null)
-            //{
-            //    LoginForm login = new LoginForm();
-            //    login.ShowDialog();
-            //    if (login.isLogin)
-            //        Iam = login.user;
-            //    else
-            //        Close();
-            //}
-
-            Iam = new User()
+            if (Iam == null)
             {
-                Login = "test"
-            };
+                LoginForm login = new LoginForm();
+                login.ShowDialog();
+                if (login.isLogin)
+                    Iam = login.user;
+                else
+                    Close();
+            }
+
+            
 
             ConnectToServer();
         }
@@ -82,15 +79,13 @@ namespace TestClient
             }
 
         }
-        void SendMessage()
+        void SendMessage(string msg, MessageType type)
         {
             if (server == null)
                 return;
 
-
-            
-            byte[] data = Encoding.UTF8.GetBytes("hello test");
-            var info = new TransferInfo(data.Length, MessageType.Message);
+            byte[] data = Encoding.UTF8.GetBytes(msg);
+            var info = new TransferInfo(data.Length, type);
             server.Send(info.ToBytes()); //інформація 
             server.Send(data); //повідомлення
 
@@ -125,10 +120,28 @@ namespace TestClient
                     }
                     string recive = Encoding.UTF8.GetString(memoryStream.ToArray());
                     
+                    switch (info.Type)
+                    {
+                        case MessageType.Test:
+                            {
+                                XmlSerializer serializer = new XmlSerializer(typeof(MakeTest));
+
+                                var reader = new StreamReader(memoryStream, Encoding.UTF8 );
+                                test = (MakeTest)serializer.Deserialize(reader);
+
+
+                                FillFild();
+                                FillRadioAnswer();
+                                FillQuestions();
+                                mainWindow.Children.Clear();
+                                break;
+                            }
+                    }
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                System.Windows.MessageBox.Show(ex.Message);
                 System.Windows.MessageBox.Show("Connection with server is lost");
             }
         }
@@ -144,7 +157,7 @@ namespace TestClient
 
         private void nextQuestion_Click(object sender, RoutedEventArgs e)
         {
-            SendMessage();
+            //SendMessage();
         }
 
         private void EndExamButton_Click(object sender, RoutedEventArgs e)
@@ -266,6 +279,12 @@ namespace TestClient
             }
             
             
+        }
+
+        private void GetExam_Click(object sender, RoutedEventArgs e)
+        {
+            SendMessage("get exam", MessageType.Test);
+            ReceiveMessages();
         }
     }
 }

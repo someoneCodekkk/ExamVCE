@@ -1,4 +1,5 @@
 ﻿using NetworkAppLibrary;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -133,8 +134,8 @@ namespace TestAdminServer
                         left -= count;
                     }
                     string recive = Encoding.UTF8.GetString(memoryStream.ToArray());
-                    MessageBox.Show(recive);
-                    //FunctionForSwich(info, recive, client);
+                    
+                    FunctionForSwich(info, recive, client);
                 }
 
             }
@@ -170,7 +171,8 @@ namespace TestAdminServer
                                 Test = xmlTest,
                                 DateLoad = time
                             });
-                            //test.SaveChanges();
+                            test.SaveChanges();
+                            MessageBox.Show("test was added");
                         }
                         break;
                     }
@@ -192,45 +194,86 @@ namespace TestAdminServer
                 
             }
         }
-        //void FunctionForSwich(TransferInfo info, string recive, UserDB client)
-        //{
-        //    switch (info.Type)
-        //    {
-        //        case (MessageType.Message):
-        //            {
-        //                SendMessage msg = JsonConvert.DeserializeObject<SendMessage>(recive);
-        //                Forwarding(msg, client);
-        //                break;
-        //            }
-        //        case (MessageType.RegistrationForm):
+        void FunctionForSwich(TransferInfo info, string recive, User client)
+        {
+            switch (info.Type)
+            {
+                case MessageType.CheckLogIn:
+                    {
+                        User reciveUser = JsonConvert.DeserializeObject<User>(recive);
+                        //string answer = User.isCorrectLoginPassword(reciveUser.Login, reciveUser.Password) ? "correct" : "error";
+                        //SendAnswer(answer, client);
+                        using (ExamVceDB userLogin = new ExamVceDB())
+                        {
+                            foreach (var item in userLogin.Students)
+                            {
+                                char[] login = item.Login.ToCharArray();
+                                var password = item.Password.ToCharArray();
+                                int endPosLogin = 0;
+                                int endPosPass = 0;
+                                while (true)
+                                {
+                                    if (login[endPosLogin] == ' ' || endPosLogin > item.Login.Length - 1)
+                                    {
+                                        break;
+                                    }
+                                    endPosLogin++;
+                                }
+                                while (true)
+                                {
+                                    if (password[endPosPass] == ' ' || endPosPass > item.Login.Length - 1)
+                                    {
+                                        break;
+                                    }
+                                    endPosPass++;
+                                }
+                                string log = new string(login, 0, endPosLogin);
 
-        //            {
-        //                //string login = Encoding.UTF8.GetString(memoryStream.ToArray());
-        //                string answer;
-        //                UpDateUserDB();
-        //                answer = UserDB.isExist(recive, alredyRegistered) ? "login exist" : "success";
-        //                //byte[] answerByte = Encoding.UTF8.GetBytes(answer);
-        //                //var infoAnswer = new TransferInfo(answerByte.Length, MessageType.RegistrationForm);
-        //                //SendRegistrarion(client, infoAnswer, answerByte);
-        //                SendAnswer(answer, client);
-        //                break;
-        //            }
-        //        case MessageType.RegisteryFormSuccess:
-        //            {
-        //                //string str = Encoding.UTF8.GetString(memoryStream.ToArray());
-        //                UserDB reciveData = JsonConvert.DeserializeObject<UserDB>(recive);
-        //                alredyRegistered.Add(reciveData);
-        //                WriteDataBase();
-        //                break;
-        //            }
-        //        case MessageType.CheckLogIn:
-        //            {
-        //                UserDB reciveUser = JsonConvert.DeserializeObject<UserDB>(recive);
-        //                string answer = UserDB.isCorrectLoginPassword(reciveUser.Login, reciveUser.Password, alredyRegistered) ? "correct" : "error";
-        //                SendAnswer(answer, client);
-        //                break;
-        //            }
-        //    }
-        //}
+                                string pass = new string(password, 0, endPosPass);
+                                
+                                if (reciveUser.Login.Equals(log) && reciveUser.Password.Equals(pass))
+                                {
+                                    SendAnswer("correct", client, MessageType.GetAnswer);
+                                    
+                                    return;
+                                };
+                            }
+
+                            SendAnswer("not correct", client, MessageType.GetAnswer);
+                        }
+                        
+                        break;
+                    }
+                case MessageType.Test:
+                    {
+                        using(ExamVceDB test = new ExamVceDB())
+                        {
+                            try
+                            {
+                                //TestDB xmlTest = (TestDB)test.TestDBs.Where(i => i.ID == 1);
+
+                                string stringXmlTest = File.ReadAllText("test.xml");
+                                
+                                SendAnswer(stringXmlTest, client, MessageType.Test);
+                            }
+                            catch  { SendAnswer("error xml", client, MessageType.Test); }
+                            
+                            
+                        }
+                        break;
+                    }
+            }
+        }
+        void SendAnswer(string answer, User client, MessageType info)
+        {
+            byte[] answerByte = Encoding.UTF8.GetBytes(answer);
+            var infoAnswer = new TransferInfo(answerByte.Length, info);
+            SendRegistrarion(client, infoAnswer, answerByte);
+        }
+        void SendRegistrarion(User send, TransferInfo info, byte[] data)
+        {
+            send.SocketUser.Send(info.ToBytes());
+            send.SocketUser.Send(data);
+        }
     }
 }

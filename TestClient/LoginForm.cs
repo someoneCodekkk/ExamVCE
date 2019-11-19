@@ -12,14 +12,20 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UserLibrary;
+using Newtonsoft.Json;
 
 namespace TestClient
 {
     public partial class LoginForm : Form
     {
         Socket server;
-        string ipAddressServer = "192.168.43.175";
+        string ipAddressServer = "192.168.23.1";
         int port = 7412;
+
+
+        public User user { get; private set; }
+        string reciveAnswer;
 
         public bool isLogin { get; private set; }
         public LoginForm()
@@ -54,6 +60,68 @@ namespace TestClient
 
             }
 
+        }
+        void ReceiveMessages()
+        {
+            try
+            {
+                byte[] infoBytes = new byte[8];
+                server.Receive(infoBytes);
+                var info = TransferInfo.FromBytes(infoBytes);
+                byte[] buffer = new byte[250];
+                MemoryStream memoryStream = new MemoryStream();
+                int left = info.Size;
+                int count = 0;
+                while (left > 0)
+                {
+                    int download = left < buffer.Length ? left : buffer.Length;
+                    count = server.Receive(buffer, download, SocketFlags.None);
+                    memoryStream.Write(buffer, 0, count);
+                    left -= count;
+                }
+                switch (info.Type)
+                {
+                    case (MessageType.GetAnswer):
+                        reciveAnswer = Encoding.UTF8.GetString(memoryStream.ToArray());
+                        break;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Connection with server is lost");
+            }
+
+        }
+        void SendRequest()
+        {
+            user = new User()
+            {
+                Login = textBoxLogin.Text,
+                Password = textBoxPassword.Text
+            };
+
+            byte[] userByte = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user));
+            var info = new TransferInfo(userByte.Length, MessageType.CheckLogIn);
+            server.Send(info.ToBytes());
+            server.Send(userByte);
+
+            ReceiveMessages();
+        }
+
+        private void ButtonLogin_Click(object sender, EventArgs e)
+        {
+            SendRequest();
+            if (reciveAnswer.Equals("correct"))
+            {
+                isLogin = true;
+                MessageBox.Show("uhhhu success");
+                server.Close();
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Check your login and password");
+            }
         }
     }
 }

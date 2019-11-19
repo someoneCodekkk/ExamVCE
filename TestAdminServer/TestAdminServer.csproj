@@ -42,6 +42,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -78,6 +81,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MakeTestForJSON.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Staff.cs" />
@@ -117,9 +121,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LibraryForTest\LibraryForTest.csproj">
+      <Project>{5e17e346-6b48-49ac-8a48-5293a21e7bed}</Project>
+      <Name>LibraryForTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NetworkAppLibrary\NetworkAppLibrary.csproj">
       <Project>{deba1638-e05a-4b8c-a9c5-7807cea8c665}</Project>
       <Name>NetworkAppLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestClient\TestClient.csproj">
+      <Project>{13dfc0b6-294d-4f00-9952-03b32092905c}</Project>
+      <Name>TestClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\UserLibrary\UserLibrary.csproj">
       <Project>{fff151b2-a841-4f7b-904c-8737c9860ec6}</Project>

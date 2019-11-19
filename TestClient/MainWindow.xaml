@@ -12,6 +12,7 @@
             <MenuItem Header="File">
                 <MenuItem Name="ChooseStartExam" Click="ChooseStartExam_Click" Header="Start exam"></MenuItem>
                 <MenuItem Header="Exit" Name="ExitFromProgram" Click="ExitFromProgram_Click"></MenuItem>
+                <MenuItem Header="Get exam" Name="GetExam" Click="GetExam_Click"></MenuItem>
             </MenuItem>
 
         </Menu>
