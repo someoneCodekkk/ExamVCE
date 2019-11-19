@@ -6,7 +6,62 @@
         xmlns:local="clr-namespace:TestClient"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" IsMainMenu="True">
+            <MenuItem Header="File">
+                <MenuItem Name="ChooseStartExam" Click="ChooseStartExam_Click" Header="Start exam"></MenuItem>
+                <MenuItem Header="Exit" Name="ExitFromProgram" Click="ExitFromProgram_Click"></MenuItem>
+            </MenuItem>
+
+        </Menu>
+        <Grid DockPanel.Dock="Top" Background="Olive" Name="statusGrid">
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel Name="markChekBox"></StackPanel>
+            <TextBlock Grid.Column="1" Name="numberQuestion" Text="Question " FontSize="14" VerticalAlignment="Center" Padding="30, 0, 0, 0"></TextBlock>
+            <Label Grid.Column="2" Content="Timer" VerticalAlignment="Center"></Label>
+        </Grid>
+        <Grid DockPanel.Dock="Bottom" Background="Aqua">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="95*"/>
+                <ColumnDefinition Width="357*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition  Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Name="YourMark" Visibility="Hidden" Grid.ColumnSpan="2"></TextBlock>
+            <Button Grid.Column="2" Content="Save Sesion" HorizontalAlignment="Right" Width="150" Margin="0,10,10,10" Command="Save"></Button>
+            <Button Grid.Column="3" Content="End Exam" Width="150" Margin="10" Click="EndExamButton_Click" Name="EndExamButton" IsEnabled="False"></Button>
+        </Grid>
+        <Grid DockPanel.Dock="Bottom" Background="Bisque">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Previous" Name="prevQuestion" Click="prevQuestion_Click" Width="150" Margin="10, 0, 10, 0"></Button>
+                <Button Content="Next" Name="nextQuestion" Click="nextQuestion_Click" Width="150"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <CheckBox Content="Show answer"  VerticalAlignment="Center" Margin="10, 0, 10 ,0"></CheckBox>
+                <CheckBox Content="Show List" VerticalAlignment="Center" Margin="0, 0, 10, 0"></CheckBox>
+            </StackPanel>
+        </Grid>
+        <Grid DockPanel.Dock="Right" Width="200">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Name="questionPanel"></StackPanel>
+            <StackPanel Grid.Column="1" Name="questionMark" ></StackPanel>
+        </Grid>
+
+
+        <StackPanel  Name="mainWindow" Background="RosyBrown">
+            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="Choose file for testing" Command="Open" FontSize="25"></Button>
+        </StackPanel>
+    </DockPanel>
 </Window>

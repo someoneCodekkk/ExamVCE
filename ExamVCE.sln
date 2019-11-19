@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAdminServer", "TestAdmi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryForTest", "LibraryForTest\LibraryForTest.csproj", "{5E17E346-6B48-49AC-8A48-5293A21E7BED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkAppLibrary", "NetworkAppLibrary\NetworkAppLibrary.csproj", "{DEBA1638-E05A-4B8C-A9C5-7807CEA8C665}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserLibrary", "UserLibrary\UserLibrary.csproj", "{FFF151B2-A841-4F7B-904C-8737C9860EC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{5E17E346-6B48-49AC-8A48-5293A21E7BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E17E346-6B48-49AC-8A48-5293A21E7BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E17E346-6B48-49AC-8A48-5293A21E7BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBA1638-E05A-4B8C-A9C5-7807CEA8C665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBA1638-E05A-4B8C-A9C5-7807CEA8C665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBA1638-E05A-4B8C-A9C5-7807CEA8C665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBA1638-E05A-4B8C-A9C5-7807CEA8C665}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFF151B2-A841-4F7B-904C-8737C9860EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFF151B2-A841-4F7B-904C-8737C9860EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFF151B2-A841-4F7B-904C-8737C9860EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFF151B2-A841-4F7B-904C-8737C9860EC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

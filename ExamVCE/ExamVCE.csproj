@@ -46,9 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Answer.cs" />
-    <Compile Include="MakeTest.cs" />
-    <Compile Include="Question.cs" />
     <Compile Include="TestDesigner.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibraryForTest\LibraryForTest.csproj">
+      <Project>{5e17e346-6b48-49ac-8a48-5293a21e7bed}</Project>
+      <Name>LibraryForTest</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
