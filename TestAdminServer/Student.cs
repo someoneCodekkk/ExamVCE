@@ -8,6 +8,12 @@ namespace TestAdminServer
 
     public partial class Student
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Student()
+        {
+            PassExams = new HashSet<PassExam>();
+        }
+
         public int ID { get; set; }
 
         [Required]
@@ -33,5 +39,8 @@ namespace TestAdminServer
         [Required]
         [StringLength(100)]
         public string Specialisation { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PassExam> PassExams { get; set; }
     }
 }

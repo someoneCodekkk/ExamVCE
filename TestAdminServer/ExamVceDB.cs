@@ -8,10 +8,11 @@ namespace TestAdminServer
     public partial class ExamVceDB : DbContext
     {
         public ExamVceDB()
-            : base("name=DBvce")
+            : base("name=ExamVceDB")
         {
         }
 
+        public virtual DbSet<PassExam> PassExams { get; set; }
         public virtual DbSet<Staff> Staffs { get; set; }
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
@@ -28,6 +29,11 @@ namespace TestAdminServer
                 .IsFixedLength();
 
             modelBuilder.Entity<Staff>()
+                .HasMany(e => e.PassExams)
+                .WithOptional(e => e.Staff)
+                .HasForeignKey(e => e.Id_Sender);
+
+            modelBuilder.Entity<Staff>()
                 .HasMany(e => e.TestDBs)
                 .WithRequired(e => e.Staff)
                 .HasForeignKey(e => e.IdFromPerson)
@@ -40,6 +46,18 @@ namespace TestAdminServer
             modelBuilder.Entity<Student>()
                 .Property(e => e.Password)
                 .IsFixedLength();
+
+            modelBuilder.Entity<Student>()
+                .HasMany(e => e.PassExams)
+                .WithRequired(e => e.Student)
+                .HasForeignKey(e => e.Id_Student)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<TestDB>()
+                .HasMany(e => e.PassExams)
+                .WithRequired(e => e.TestDB)
+                .HasForeignKey(e => e.Id_Test)
+                .WillCascadeOnDelete(false);
         }
     }
 }

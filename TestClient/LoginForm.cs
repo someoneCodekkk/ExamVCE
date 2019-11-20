@@ -19,7 +19,7 @@ namespace TestClient
 {
     public partial class LoginForm : Form
     {
-        Socket server;
+        public Socket server { get; private set; }
         string ipAddressServer = "192.168.43.175";
         int port = 7412;
 
@@ -111,9 +111,11 @@ namespace TestClient
         private void ButtonLogin_Click(object sender, EventArgs e)
         {
             SendRequest();
-            if (reciveAnswer.Equals("correct"))
+            int tmp = 0;
+            if (int.TryParse(reciveAnswer, out tmp))
             {
                 isLogin = true;
+                user.ID = int.Parse(reciveAnswer);
                 MessageBox.Show("uhhhu success");
                 server.Close();
                 Close();

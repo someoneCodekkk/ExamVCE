@@ -12,6 +12,7 @@ namespace TestAdminServer
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Staff()
         {
+            PassExams = new HashSet<PassExam>();
             TestDBs = new HashSet<TestDB>();
         }
 
@@ -39,6 +40,9 @@ namespace TestAdminServer
         [Required]
         [StringLength(1024)]
         public string Password { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PassExam> PassExams { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TestDB> TestDBs { get; set; }

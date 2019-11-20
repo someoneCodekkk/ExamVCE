@@ -9,6 +9,12 @@ namespace TestAdminServer
     [Table("TestDB")]
     public partial class TestDB
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public TestDB()
+        {
+            PassExams = new HashSet<PassExam>();
+        }
+
         public int ID { get; set; }
 
         public int IdFromPerson { get; set; }
@@ -19,6 +25,9 @@ namespace TestAdminServer
 
         [Column(TypeName = "date")]
         public DateTime? DateLoad { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PassExam> PassExams { get; set; }
 
         public virtual Staff Staff { get; set; }
     }

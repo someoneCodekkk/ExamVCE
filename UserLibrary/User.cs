@@ -28,6 +28,11 @@ namespace UserLibrary
             Login = login;
             IsOnline = true;
         }
+        public User(Socket socket, int id)
+        {
+            SocketUser = socket;
+            ID = id;
+        }
         public static bool isExist(string login, List<User> list)
         {
             foreach (var item in list)

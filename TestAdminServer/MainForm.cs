@@ -95,9 +95,18 @@ namespace TestAdminServer
 
                         }
                         string loginUser = Encoding.UTF8.GetString(loginClient, 0, countBytes);
-
+                        User user = null;
+                        try
+                        {
+                            int id = int.Parse(loginUser);
+                             user = new User(client, id);
+                        }
+                        catch
+                        {
+                             user = new User(client, loginUser);
+                        }
                         
-                        User user = new User(client, loginUser);
+                        
 
                         users.Add(user);
                         Task.Run(() => ConnectClient(user));
@@ -267,12 +276,14 @@ namespace TestAdminServer
                                 
                                 if (reciveUser.Login.Equals(log) && reciveUser.Password.Equals(pass))
                                 {
-                                    SendAnswer("correct", client, MessageType.GetAnswer);
+                                    client.ID = item.ID;
+                                    
+                                    SendAnswer(item.ID.ToString(), client, MessageType.GetAnswer);
                                     
                                     return;
                                 };
                             }
-
+                            
                             SendAnswer("not correct", client, MessageType.GetAnswer);
                         }
                         
@@ -295,6 +306,8 @@ namespace TestAdminServer
                 case MessageType.CheckTestFromStudent:
                     {
                         MakeTest testFromUser = DeserialiseFromString(recive);
+                        int mark = 0;
+                        bool isWriteToDB = true;
                         using (ExamVceDB test = new ExamVceDB())
                         {
                             try
@@ -302,7 +315,6 @@ namespace TestAdminServer
                                 var result = test.TestDBs.FirstOrDefault(i => i.ID == testFromUser.IdTest);
                                 MakeTest correctTest = DeserialiseFromString(result.Test);
                                 
-                                int mark = 0;
                                 for (int i = 0; i < correctTest.questions.Count; i++)
                                 {
                                     for (int j = 0; j < correctTest.questions[i].answers.Count; j++)
@@ -316,14 +328,39 @@ namespace TestAdminServer
                                         }
                                     }
                                 }
-                                MessageBox.Show(mark.ToString());
-                                
+                                //MessageBox.Show(mark.ToString());
+                               
                             }
                             catch
                             {
+                                isWriteToDB = false;
                                 MessageBox.Show("Test not foudn");
                             }
                         }
+                        if(isWriteToDB)
+                        {
+                            try
+                            {
+                                using (ExamVceDB passExam = new ExamVceDB())
+                                {
+                                    passExam.PassExams.Add(new PassExam()
+                                    {
+                                        Id_Sender = loginPerson.ID,
+                                        Id_Student = client.ID,
+                                        Id_Test = testFromUser.IdTest,
+                                        Mark = mark,
+                                        Date_Pass = DateTime.Now
+                                    });
+                                    passExam.SaveChanges();
+                                    MessageBox.Show("Test pass writed in DB");
+                                }
+                            }catch(Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                            
+                        }
+                        
                             break;
                     }
             }

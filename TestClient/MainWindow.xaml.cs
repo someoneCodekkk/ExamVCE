@@ -48,13 +48,13 @@ namespace TestClient
                 LoginForm login = new LoginForm();
                 login.ShowDialog();
                 if (login.isLogin)
+                {
                     Iam = login.user;
+                }
                 else
                     Close();
             }
-
-            
-
+            WhoLoginLabel.Content = $"{Iam.ID} - {Iam.Login}";
             ConnectToServer();
         }
         //зєднання з сервером
@@ -66,7 +66,7 @@ namespace TestClient
                 server = new Socket(serverIP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 server.Connect(new IPEndPoint(serverIP, port));
 
-                server.Send(Encoding.UTF8.GetBytes(Iam.Login));
+                server.Send(Encoding.UTF8.GetBytes(Iam.ID.ToString()));
                 Task.Run(() => ReceiveMessages());
             }
             catch (SocketException se)
@@ -169,6 +169,7 @@ namespace TestClient
         //Завершення екзамену надсилання відповідей
         private void EndExamButton_Click(object sender, RoutedEventArgs e)
         {
+            EndExamButton.IsEnabled = false;
             int i = 0;
             int j = 0;
             foreach (var item in test.questions)
@@ -192,6 +193,10 @@ namespace TestClient
 
                 //System.Windows.MessageBox.Show(textWriter.ToString());
                 SendMessage(textWriter.ToString(), MessageType.CheckTestFromStudent);
+                mainWindow.Children.Clear();
+                questionPanel.Children.Clear();
+                typeQuestions.Clear();
+
             }
             
             
