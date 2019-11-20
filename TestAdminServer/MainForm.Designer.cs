@@ -36,6 +36,14 @@
             this.labelWhoIs = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxSendToUser = new System.Windows.Forms.TextBox();
+            this.listBoxExam = new System.Windows.Forms.ListBox();
+            this.listViewUsers = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.buttonSend = new System.Windows.Forms.Button();
+            this.buttonShowPassExam = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,6 +65,10 @@
             this.tableLayoutPanel1.Controls.Add(this.labelWhoIs, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.textBoxSendToUser, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.listBoxExam, 6, 2);
+            this.tableLayoutPanel1.Controls.Add(this.listViewUsers, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.buttonSend, 4, 7);
+            this.tableLayoutPanel1.Controls.Add(this.buttonShowPassExam, 0, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -72,6 +84,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(742, 309);
             this.tableLayoutPanel1.TabIndex = 0;
+            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.TableLayoutPanel1_Paint);
             // 
             // buttonStartServer
             // 
@@ -141,6 +154,74 @@
             this.textBoxSendToUser.Size = new System.Drawing.Size(86, 20);
             this.textBoxSendToUser.TabIndex = 8;
             // 
+            // listBoxExam
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.listBoxExam, 2);
+            this.listBoxExam.Enabled = false;
+            this.listBoxExam.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listBoxExam.FormattingEnabled = true;
+            this.listBoxExam.ItemHeight = 16;
+            this.listBoxExam.Location = new System.Drawing.Point(555, 71);
+            this.listBoxExam.Name = "listBoxExam";
+            this.tableLayoutPanel1.SetRowSpan(this.listBoxExam, 5);
+            this.listBoxExam.Size = new System.Drawing.Size(184, 164);
+            this.listBoxExam.TabIndex = 9;
+            this.listBoxExam.SelectedIndexChanged += new System.EventHandler(this.ListBoxExam_SelectedIndexChanged);
+            // 
+            // listViewUsers
+            // 
+            this.listViewUsers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.tableLayoutPanel1.SetColumnSpan(this.listViewUsers, 4);
+            this.listViewUsers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewUsers.Location = new System.Drawing.Point(187, 71);
+            this.listViewUsers.Name = "listViewUsers";
+            this.tableLayoutPanel1.SetRowSpan(this.listViewUsers, 5);
+            this.listViewUsers.Size = new System.Drawing.Size(362, 164);
+            this.listViewUsers.TabIndex = 10;
+            this.listViewUsers.UseCompatibleStateImageBehavior = false;
+            this.listViewUsers.View = System.Windows.Forms.View.Details;
+            this.listViewUsers.SelectedIndexChanged += new System.EventHandler(this.ListViewUsers_SelectedIndexChanged);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "ID";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Login";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Name";
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Course";
+            // 
+            // buttonSend
+            // 
+            this.buttonSend.Location = new System.Drawing.Point(371, 241);
+            this.buttonSend.Name = "buttonSend";
+            this.buttonSend.Size = new System.Drawing.Size(86, 23);
+            this.buttonSend.TabIndex = 11;
+            this.buttonSend.Text = "Send";
+            this.buttonSend.UseVisualStyleBackColor = true;
+            this.buttonSend.Click += new System.EventHandler(this.ButtonSend_Click);
+            // 
+            // buttonShowPassExam
+            // 
+            this.buttonShowPassExam.Location = new System.Drawing.Point(3, 173);
+            this.buttonShowPassExam.Name = "buttonShowPassExam";
+            this.buttonShowPassExam.Size = new System.Drawing.Size(86, 23);
+            this.buttonShowPassExam.TabIndex = 12;
+            this.buttonShowPassExam.Text = "show pass exam";
+            this.buttonShowPassExam.UseVisualStyleBackColor = true;
+            this.buttonShowPassExam.Click += new System.EventHandler(this.ButtonShowPassExam_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -165,6 +246,14 @@
         private System.Windows.Forms.ComboBox comboBoxAct;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxSendToUser;
+        private System.Windows.Forms.ListBox listBoxExam;
+        private System.Windows.Forms.ListView listViewUsers;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.Button buttonSend;
+        private System.Windows.Forms.Button buttonShowPassExam;
     }
 }
 

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,6 +27,11 @@ namespace TestAdminServer
         bool isServerWork;
         Staff loginPerson;
         List<User> users = new List<User>();
+
+
+        List<int> whereNeedSend = new List<int>();
+
+        int idChooseExam = 0;
         
         public MainForm()
         {
@@ -47,8 +53,9 @@ namespace TestAdminServer
                 MessageBox.Show("Немає підключення");
 
             CheckForIllegalCrossThreadCalls = false;
-            
-            
+            FillUserFromDataBase();
+
+
         }
         //написання дозволів
         void FillPermit()
@@ -65,6 +72,7 @@ namespace TestAdminServer
                     break;
             }
             comboBoxAct.Items.Add("Add test to DB");
+            comboBoxAct.Items.Add("Choose exam");
 
         }
         //запуск сервера
@@ -229,11 +237,76 @@ namespace TestAdminServer
                         addStudent.ShowDialog();
                         break;
                     }
+                case "Choose exam":
+                    {
+                        listBoxExam.Enabled = true;
+                        using (ExamVceDB exam = new ExamVceDB())
+                        {
+                            foreach (var item in exam.TestDBs)
+                            {
+                                MakeTest subject = DeserialiseFromString(item.Test);
+                                listBoxExam.Items.Add($"{item.ID}* {subject.Subject}");
+                            }
+                            
+                        }
+                        
+                        break;
+                    }
             }
 
             if(comboBoxAct.SelectedItem.Equals("Add test to DB"))
             {
                 
+            }
+        }
+        static string GetMd5Hash(MD5 md5Hash, string input)
+        {
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data 
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
+        }
+        static bool VerifyMd5Hash(MD5 md5Hash, string input, string hash)
+        {
+            // Hash the input.
+            string hashOfInput = GetMd5Hash(md5Hash, input);
+
+            // Create a StringComparer an compare the hashes.
+            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+            if (0 == comparer.Compare(hashOfInput, hash))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        void SendExam(User client)
+        {
+            using (ExamVceDB test = new ExamVceDB())
+            {
+                try
+                {
+                    if (idChooseExam < 0)
+                        new Exception();
+                    SendAnswer(GetTestForSendStudent(idChooseExam), client, MessageType.Test);
+                }
+                catch { SendAnswer("error xml", client, MessageType.Error); }
             }
         }
         //вибір типу отриманого повідомлення
@@ -244,19 +317,22 @@ namespace TestAdminServer
                 case MessageType.CheckLogIn:
                     {
                         User reciveUser = JsonConvert.DeserializeObject<User>(recive);
-                        //string answer = User.isCorrectLoginPassword(reciveUser.Login, reciveUser.Password) ? "correct" : "error";
-                        //SendAnswer(answer, client);
-                        using (ExamVceDB userLogin = new ExamVceDB())
+                        string passRecive;
+                        using (MD5 md5Hash = MD5.Create())
                         {
-                            foreach (var item in userLogin.Students)
-                            {
-                                char[] login = item.Login.ToCharArray();
-                                var password = item.Password.ToCharArray();
+                            passRecive = GetMd5Hash(md5Hash, reciveUser.Password);
+                        }
+                            using (ExamVceDB userLogin = new ExamVceDB())
+                        {
+                            var student = userLogin.Students.Where(i => i.Login == reciveUser.Login).FirstOrDefault();
+                            
+                                char[] login = student.Login.ToCharArray();
+                                var password = student.Password.ToCharArray();
                                 int endPosLogin = 0;
                                 int endPosPass = 0;
                                 while (true)
                                 {
-                                    if (login[endPosLogin] == ' ' || endPosLogin > item.Login.Length - 1)
+                                    if (login[endPosLogin] == ' ' || endPosLogin > student.Login.Length - 1)
                                     {
                                         break;
                                     }
@@ -264,7 +340,7 @@ namespace TestAdminServer
                                 }
                                 while (true)
                                 {
-                                    if (password[endPosPass] == ' ' || endPosPass > item.Login.Length - 1)
+                                    if (password[endPosPass] == ' ' || endPosPass > student.Login.Length - 1)
                                     {
                                         break;
                                     }
@@ -273,16 +349,19 @@ namespace TestAdminServer
                                 string log = new string(login, 0, endPosLogin);
 
                                 string pass = new string(password, 0, endPosPass);
-                                
-                                if (reciveUser.Login.Equals(log) && reciveUser.Password.Equals(pass))
+
+
+                                bool isCorrectMD5 = false;
+
+                                if (reciveUser.Login.Equals(log) && passRecive.Equals(pass))
                                 {
-                                    client.ID = item.ID;
+                                    client.ID = student.ID;
                                     
-                                    SendAnswer(item.ID.ToString(), client, MessageType.GetAnswer);
+                                    SendAnswer(student.ID.ToString(), client, MessageType.GetAnswer);
                                     
                                     return;
                                 };
-                            }
+                            
                             
                             SendAnswer("not correct", client, MessageType.GetAnswer);
                         }
@@ -295,9 +374,11 @@ namespace TestAdminServer
                         {
                             try
                             {
-                                SendAnswer(GetTestForSendStudent(6), client, MessageType.Test);
+                                if (idChooseExam < 0)
+                                    new Exception();
+                                SendAnswer(GetTestForSendStudent(idChooseExam), client, MessageType.Test);
                             }
-                            catch  { SendAnswer("error xml", client, MessageType.Test); }
+                            catch  { SendAnswer("error xml", client, MessageType.Error); }
                             
                             
                         }
@@ -360,7 +441,7 @@ namespace TestAdminServer
                             }
                             
                         }
-                        
+                        SendAnswer($"Your mark is: {mark}", client, MessageType.SendMark);
                             break;
                     }
             }
@@ -386,8 +467,16 @@ namespace TestAdminServer
         //продавження надсилання відповіді
         void SendRegistrarion(User send, TransferInfo info, byte[] data)
         {
-            send.SocketUser.Send(info.ToBytes());
-            send.SocketUser.Send(data);
+            try
+            {
+                send.SocketUser.Send(info.ToBytes());
+                send.SocketUser.Send(data);
+            }
+            catch
+            {
+                users.Remove(send);
+            }
+            
         }
 
        //приховування відповідей
@@ -434,6 +523,96 @@ namespace TestAdminServer
             }
         }
 
-        
+        private void TableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void ListBoxExam_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            char[] number = new char[7];
+            for (int i = 0; i < number.Length; i++)
+            {
+                if(listBoxExam.SelectedItem.ToString()[i] == '*')
+                {
+                    break;
+                }
+                number[i] += listBoxExam.SelectedItem.ToString()[i];
+            }
+            string str = new string(number);
+            idChooseExam = int.Parse(str);
+        }
+        void FillUserFromDataBase()
+        {
+            using(ExamVceDB users = new ExamVceDB())
+            {
+                foreach (var item in users.Students)
+                {
+                    ListViewItem list = new ListViewItem(item.ID.ToString());
+                    list.SubItems.Add(item.Login);
+                    list.SubItems.Add(item.Name);
+                    list.SubItems.Add(item.Specialisation);
+
+                    listViewUsers.Items.Add(list);
+                }
+            }
+        }
+
+        private void ListViewUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            whereNeedSend.Clear();
+            foreach (var item in listViewUsers.SelectedItems)
+            {
+                char[] number = new char[7];
+                for (int i = 0; i < item.ToString().Length; i++)
+                {
+                    
+                    if (item.ToString()[i] == '{')
+                    {
+                        i++;
+                        int j = 0;
+                        do
+                        {
+                            number[j] += item.ToString()[i];
+                            i++;
+                            j++;
+                            if (item.ToString()[i] == '}')
+                                break;
+                        }
+                        while (item.ToString()[i] == '}');
+                        
+                        break;
+                    }
+                    
+                }
+
+
+                string str = new string(number);
+                int id = int.Parse(str);
+
+                whereNeedSend.Add(id);
+            }
+            
+        }
+
+        private void ButtonSend_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < users.Count; i++)
+            {
+                for (int j = 0; j < whereNeedSend.Count; j++)
+                {
+                    if (users[i].ID == whereNeedSend[j])
+                    {
+                        SendExam(users[i]);
+                    }
+                }
+
+            }
+        }
+
+        private void ButtonShowPassExam_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

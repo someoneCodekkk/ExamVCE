@@ -32,7 +32,7 @@ namespace TestClient
         List<List<TypeQuestion>> typeQuestions = new List<List<TypeQuestion>>();
 
         Socket server;
-        string ipAddressServer = "192.168.43.175";
+        string ipAddressServer = "192.168.23.1";
         int port = 7412;
 
         User Iam;
@@ -141,6 +141,17 @@ namespace TestClient
                                     EndExamButton.IsEnabled = true;
                                 });
                                 
+                                break;
+                            }
+                        case MessageType.SendMark:
+                            {
+                                Dispatcher.Invoke(() => { YourMark.Text = recive; });
+                                
+                                break;
+                            }
+                        case MessageType.Error:
+                            {
+                                System.Windows.MessageBox.Show("Uppss some error");
                                 break;
                             }
                     }

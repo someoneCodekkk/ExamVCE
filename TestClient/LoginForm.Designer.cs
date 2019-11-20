@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
-            this.buttonSignIn = new System.Windows.Forms.Button();
             this.buttonLogin = new System.Windows.Forms.Button();
             this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.labelPassword = new System.Windows.Forms.Label();
@@ -39,22 +38,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBackground)).BeginInit();
             this.SuspendLayout();
             // 
-            // buttonSignIn
-            // 
-            this.buttonSignIn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(6)))), ((int)(((byte)(181)))));
-            this.buttonSignIn.Font = new System.Drawing.Font("MV Boli", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonSignIn.Location = new System.Drawing.Point(214, 207);
-            this.buttonSignIn.Name = "buttonSignIn";
-            this.buttonSignIn.Size = new System.Drawing.Size(146, 32);
-            this.buttonSignIn.TabIndex = 3;
-            this.buttonSignIn.Text = "Registration";
-            this.buttonSignIn.UseVisualStyleBackColor = false;
-            // 
             // buttonLogin
             // 
             this.buttonLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(177)))), ((int)(((byte)(224)))));
             this.buttonLogin.Font = new System.Drawing.Font("MV Boli", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonLogin.Location = new System.Drawing.Point(39, 207);
+            this.buttonLogin.Location = new System.Drawing.Point(37, 216);
             this.buttonLogin.Name = "buttonLogin";
             this.buttonLogin.Size = new System.Drawing.Size(146, 32);
             this.buttonLogin.TabIndex = 4;
@@ -68,6 +56,7 @@
             this.textBoxPassword.Font = new System.Drawing.Font("MV Boli", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxPassword.Location = new System.Drawing.Point(214, 110);
             this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.PasswordChar = '-';
             this.textBoxPassword.Size = new System.Drawing.Size(170, 38);
             this.textBoxPassword.TabIndex = 7;
             // 
@@ -110,7 +99,7 @@
             this.pictureBoxBackground.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxBackground.Image")));
             this.pictureBoxBackground.Location = new System.Drawing.Point(1, -1);
             this.pictureBoxBackground.Name = "pictureBoxBackground";
-            this.pictureBoxBackground.Size = new System.Drawing.Size(395, 296);
+            this.pictureBoxBackground.Size = new System.Drawing.Size(395, 298);
             this.pictureBoxBackground.TabIndex = 9;
             this.pictureBoxBackground.TabStop = false;
             // 
@@ -118,14 +107,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(396, 294);
             this.Controls.Add(this.pictureBoxBackground);
-            this.Controls.Add(this.buttonSignIn);
             this.Controls.Add(this.buttonLogin);
             this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.labelPassword);
             this.Controls.Add(this.textBoxLogin);
             this.Controls.Add(this.labelLogin);
+            this.MinimizeBox = false;
             this.Name = "LoginForm";
             this.Text = "LoginForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBackground)).EndInit();
@@ -135,8 +125,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button buttonSignIn;
         private System.Windows.Forms.Button buttonLogin;
         private System.Windows.Forms.TextBox textBoxPassword;
         private System.Windows.Forms.Label labelPassword;

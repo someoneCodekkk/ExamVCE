@@ -63,12 +63,12 @@
             this.tableLayoutPanel1.Controls.Add(this.labelAnswer, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.textBoxAnswer, 4, 1);
             this.tableLayoutPanel1.Controls.Add(this.checkBoxIsCorrectAnswer, 6, 1);
-            this.tableLayoutPanel1.Controls.Add(this.buttonNewAsk, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.buttonAddQuestion, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.buttonNextAnswer, 6, 6);
             this.tableLayoutPanel1.Controls.Add(this.checkedListBoxAnswer, 3, 3);
             this.tableLayoutPanel1.Controls.Add(this.labelReadyCondition, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.buttonCreateXml, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.buttonCreateXml, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.buttonNewAsk, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.buttonAddQuestion, 3, 6);
+            this.tableLayoutPanel1.Controls.Add(this.buttonNextAnswer, 5, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -95,6 +95,7 @@
             // textBoxCondition
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.textBoxCondition, 2);
+            this.textBoxCondition.Enabled = false;
             this.textBoxCondition.Location = new System.Drawing.Point(451, 3);
             this.textBoxCondition.Name = "textBoxCondition";
             this.textBoxCondition.Size = new System.Drawing.Size(218, 20);
@@ -108,12 +109,13 @@
             this.textBoxQuestion.Location = new System.Drawing.Point(3, 3);
             this.textBoxQuestion.Multiline = true;
             this.textBoxQuestion.Name = "textBoxQuestion";
-            this.tableLayoutPanel1.SetRowSpan(this.textBoxQuestion, 4);
-            this.textBoxQuestion.Size = new System.Drawing.Size(330, 138);
+            this.tableLayoutPanel1.SetRowSpan(this.textBoxQuestion, 6);
+            this.textBoxQuestion.Size = new System.Drawing.Size(330, 210);
             this.textBoxQuestion.TabIndex = 7;
             // 
             // numericUpDownCost
             // 
+            this.numericUpDownCost.Enabled = false;
             this.numericUpDownCost.Location = new System.Drawing.Point(675, 3);
             this.numericUpDownCost.Name = "numericUpDownCost";
             this.numericUpDownCost.Size = new System.Drawing.Size(106, 20);
@@ -131,6 +133,7 @@
             // textBoxAnswer
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.textBoxAnswer, 2);
+            this.textBoxAnswer.Enabled = false;
             this.textBoxAnswer.Location = new System.Drawing.Point(451, 39);
             this.textBoxAnswer.Name = "textBoxAnswer";
             this.textBoxAnswer.Size = new System.Drawing.Size(218, 20);
@@ -139,6 +142,7 @@
             // checkBoxIsCorrectAnswer
             // 
             this.checkBoxIsCorrectAnswer.AutoSize = true;
+            this.checkBoxIsCorrectAnswer.Enabled = false;
             this.checkBoxIsCorrectAnswer.Location = new System.Drawing.Point(675, 39);
             this.checkBoxIsCorrectAnswer.Name = "checkBoxIsCorrectAnswer";
             this.checkBoxIsCorrectAnswer.Size = new System.Drawing.Size(70, 17);
@@ -148,7 +152,7 @@
             // 
             // buttonNewAsk
             // 
-            this.buttonNewAsk.Location = new System.Drawing.Point(115, 183);
+            this.buttonNewAsk.Location = new System.Drawing.Point(227, 219);
             this.buttonNewAsk.Name = "buttonNewAsk";
             this.buttonNewAsk.Size = new System.Drawing.Size(106, 23);
             this.buttonNewAsk.TabIndex = 6;
@@ -158,9 +162,11 @@
             // 
             // buttonAddQuestion
             // 
-            this.buttonAddQuestion.Location = new System.Drawing.Point(227, 183);
+            this.tableLayoutPanel1.SetColumnSpan(this.buttonAddQuestion, 2);
+            this.buttonAddQuestion.Enabled = false;
+            this.buttonAddQuestion.Location = new System.Drawing.Point(339, 219);
             this.buttonAddQuestion.Name = "buttonAddQuestion";
-            this.buttonAddQuestion.Size = new System.Drawing.Size(106, 23);
+            this.buttonAddQuestion.Size = new System.Drawing.Size(200, 23);
             this.buttonAddQuestion.TabIndex = 8;
             this.buttonAddQuestion.Text = "Добавити запитання";
             this.buttonAddQuestion.UseVisualStyleBackColor = true;
@@ -168,11 +174,13 @@
             // 
             // buttonNextAnswer
             // 
-            this.buttonNextAnswer.Location = new System.Drawing.Point(675, 219);
+            this.tableLayoutPanel1.SetColumnSpan(this.buttonNextAnswer, 2);
+            this.buttonNextAnswer.Enabled = false;
+            this.buttonNextAnswer.Location = new System.Drawing.Point(563, 219);
             this.buttonNextAnswer.Name = "buttonNextAnswer";
-            this.buttonNextAnswer.Size = new System.Drawing.Size(109, 27);
+            this.buttonNextAnswer.Size = new System.Drawing.Size(221, 27);
             this.buttonNextAnswer.TabIndex = 6;
-            this.buttonNextAnswer.Text = "Записати";
+            this.buttonNextAnswer.Text = "Записати відповідь";
             this.buttonNextAnswer.UseVisualStyleBackColor = true;
             this.buttonNextAnswer.Click += new System.EventHandler(this.buttonNextAnswer_Click);
             // 
@@ -200,11 +208,12 @@
             // 
             // buttonCreateXml
             // 
-            this.buttonCreateXml.Location = new System.Drawing.Point(3, 183);
+            this.tableLayoutPanel1.SetColumnSpan(this.buttonCreateXml, 2);
+            this.buttonCreateXml.Location = new System.Drawing.Point(3, 219);
             this.buttonCreateXml.Name = "buttonCreateXml";
-            this.buttonCreateXml.Size = new System.Drawing.Size(75, 23);
+            this.buttonCreateXml.Size = new System.Drawing.Size(196, 23);
             this.buttonCreateXml.TabIndex = 12;
-            this.buttonCreateXml.Text = "Save";
+            this.buttonCreateXml.Text = "Зберегти у XML файл";
             this.buttonCreateXml.UseVisualStyleBackColor = true;
             this.buttonCreateXml.Click += new System.EventHandler(this.buttonCreateXml_Click);
             // 

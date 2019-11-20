@@ -45,6 +45,17 @@ namespace ExamVCE
 
         private void buttonAddQuestion_Click(object sender, EventArgs e)
         {
+
+            buttonNewAsk.Enabled = true;
+            buttonNextAnswer.Enabled = false;
+            buttonAddQuestion.Enabled = false;
+
+
+            textBoxAnswer.Enabled = false;
+            textBoxCondition.Enabled = false;
+            numericUpDownCost.Enabled = !true;
+            checkBoxIsCorrectAnswer.Enabled = !true;
+
             questions.Add(new Question { Condition = textBoxCondition.Text, answers = packageAnswer[packageAnswer.Count - 1], Weight = (int)numericUpDownCost.Value });
             tests.Clear();
 
@@ -66,12 +77,20 @@ namespace ExamVCE
                     textBoxQuestion.Text += '\n';
                 }
             }
+            checkedListBoxAnswer.Items.Clear();
         }
 
         private void buttonNewAsk_Click(object sender, EventArgs e)
         {
             packageAnswer.Add(new List<Answer>());
-            
+            buttonAddQuestion.Enabled = true;
+            buttonNextAnswer.Enabled = true;
+            buttonNewAsk.Enabled = false;
+
+            textBoxAnswer.Enabled = true;
+            textBoxCondition.Enabled = true;
+            numericUpDownCost.Enabled = true;
+            checkBoxIsCorrectAnswer.Enabled = true;
         }
 
         
@@ -88,10 +107,23 @@ namespace ExamVCE
 
         private void buttonCreateXml_Click(object sender, EventArgs e)
         {
-            var xmlSerializer = new XmlSerializer(typeof(MakeTest));
-            var stringWriter = new StringWriter();
-            xmlSerializer.Serialize(stringWriter, tests[0]);
-            File.WriteAllText("test.xml", stringWriter.ToString());
+            try
+            {
+                var xmlSerializer = new XmlSerializer(typeof(MakeTest));
+                var stringWriter = new StringWriter();
+                xmlSerializer.Serialize(stringWriter, tests[0]);
+                SaveFileDialog save = new SaveFileDialog();
+                save.ShowDialog();
+                save.Filter = "Data Files (*.xml)|*.xml";
+                save.DefaultExt = "xml";
+                save.AddExtension = true;
+                File.WriteAllText(save.FileName, stringWriter.ToString());
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
     }
 }
