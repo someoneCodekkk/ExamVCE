@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkAppLibrary
 {
-    public enum MessageType { Text, Test, RegistrationForm, RegisteryFormSuccess, CheckLogIn, GetAnswer, Message }
+    public enum MessageType { Text, Test, RegistrationForm, RegisteryFormSuccess, CheckLogIn, GetAnswer, Message, Error, CheckTestFromStudent, SendMark }
     public struct TransferInfo
     {
         public int Size;

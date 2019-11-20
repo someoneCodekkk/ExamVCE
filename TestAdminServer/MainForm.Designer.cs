@@ -31,9 +31,9 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.buttonStartServer = new System.Windows.Forms.Button();
             this.labelStatusServer = new System.Windows.Forms.Label();
-            this.labelWhoIs = new System.Windows.Forms.Label();
             this.labelActing = new System.Windows.Forms.Label();
             this.comboBoxAct = new System.Windows.Forms.ComboBox();
+            this.labelWhoIs = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxSendToUser = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
@@ -95,17 +95,6 @@
             this.labelStatusServer.Text = "Server is :";
             this.labelStatusServer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // labelWhoIs
-            // 
-            this.labelWhoIs.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.labelWhoIs, 4);
-            this.labelWhoIs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelWhoIs.Location = new System.Drawing.Point(371, 0);
-            this.labelWhoIs.Name = "labelWhoIs";
-            this.labelWhoIs.Size = new System.Drawing.Size(368, 34);
-            this.labelWhoIs.TabIndex = 3;
-            this.labelWhoIs.Text = "Who is ?";
-            // 
             // labelActing
             // 
             this.labelActing.AutoSize = true;
@@ -124,6 +113,17 @@
             this.comboBoxAct.Size = new System.Drawing.Size(121, 21);
             this.comboBoxAct.TabIndex = 6;
             this.comboBoxAct.SelectedIndexChanged += new System.EventHandler(this.comboBoxAct_SelectedIndexChanged);
+            // 
+            // labelWhoIs
+            // 
+            this.labelWhoIs.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.labelWhoIs, 4);
+            this.labelWhoIs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelWhoIs.Location = new System.Drawing.Point(371, 0);
+            this.labelWhoIs.Name = "labelWhoIs";
+            this.labelWhoIs.Size = new System.Drawing.Size(368, 34);
+            this.labelWhoIs.TabIndex = 3;
+            this.labelWhoIs.Text = "Who is ?";
             // 
             // label1
             // 

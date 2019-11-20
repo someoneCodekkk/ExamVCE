@@ -1,4 +1,5 @@
-﻿using NetworkAppLibrary;
+﻿using LibraryForTest;
+using NetworkAppLibrary;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using UserLibrary;
 
 namespace TestAdminServer
@@ -65,6 +67,7 @@ namespace TestAdminServer
             comboBoxAct.Items.Add("Add test to DB");
 
         }
+        //запуск сервера
         private void buttonStartServer_Click(object sender, EventArgs e)
         {
             if (socket == null)
@@ -104,7 +107,7 @@ namespace TestAdminServer
                 });
             }
         }
-
+        //зєднання клієнта
         void ConnectClient(User client)
         {
             try
@@ -150,6 +153,35 @@ namespace TestAdminServer
             }
         }
 
+        //запис айди тесту
+        void ChangeIDForTest()
+        {
+            using(ExamVceDB test = new ExamVceDB())
+            {
+                //var last = test.TestDBs.Last();
+                TestDB last = null;
+                foreach (var item in test.TestDBs)
+                {
+                    last = item;
+                }
+                var result = test.TestDBs.FirstOrDefault(i => i.ID == last.ID);
+
+                var serializer = new XmlSerializer(typeof(MakeTest));
+                MakeTest desr;
+
+                using (TextReader reader = new StringReader(result.Test))
+                {
+                    desr = (MakeTest)serializer.Deserialize(reader);
+                }
+                desr.IdTest = last.ID;
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(MakeTest));
+                var stringWriter = new StringWriter();
+                xmlSerializer.Serialize(stringWriter, desr);
+                last.Test = stringWriter.ToString();
+                test.SaveChanges();
+            }
+        }
+        //вибір дії
         private void comboBoxAct_SelectedIndexChanged(object sender, EventArgs e)
         {
             string act = comboBoxAct.SelectedItem.ToString();
@@ -169,11 +201,12 @@ namespace TestAdminServer
                             {
                                 IdFromPerson = loginPerson.ID,
                                 Test = xmlTest,
-                                DateLoad = time
+                                DateLoad = time,
                             });
                             test.SaveChanges();
                             MessageBox.Show("test was added");
                         }
+                        ChangeIDForTest();
                         break;
                     }
                 case "Send test to":
@@ -194,6 +227,7 @@ namespace TestAdminServer
                 
             }
         }
+        //вибір типу отриманого повідомлення
         void FunctionForSwich(TransferInfo info, string recive, User client)
         {
             switch (info.Type)
@@ -250,11 +284,7 @@ namespace TestAdminServer
                         {
                             try
                             {
-                                //TestDB xmlTest = (TestDB)test.TestDBs.Where(i => i.ID == 1);
-
-                                string stringXmlTest = File.ReadAllText("test.xml");
-                                
-                                SendAnswer(stringXmlTest, client, MessageType.Test);
+                                SendAnswer(GetTestForSendStudent(6), client, MessageType.Test);
                             }
                             catch  { SendAnswer("error xml", client, MessageType.Test); }
                             
@@ -262,18 +292,111 @@ namespace TestAdminServer
                         }
                         break;
                     }
+                case MessageType.CheckTestFromStudent:
+                    {
+                        MakeTest testFromUser = DeserialiseFromString(recive);
+                        using (ExamVceDB test = new ExamVceDB())
+                        {
+                            try
+                            {
+                                var result = test.TestDBs.FirstOrDefault(i => i.ID == testFromUser.IdTest);
+                                MakeTest correctTest = DeserialiseFromString(result.Test);
+                                
+                                int mark = 0;
+                                for (int i = 0; i < correctTest.questions.Count; i++)
+                                {
+                                    for (int j = 0; j < correctTest.questions[i].answers.Count; j++)
+                                    {
+                                        if(correctTest.questions[i].answers[j].IsCorrect)
+                                        {
+                                            if (testFromUser.questions[i].answers[j].IsCorrect)
+                                            {
+                                                mark += correctTest.questions[i].Weight;
+                                            }
+                                        }
+                                    }
+                                }
+                                MessageBox.Show(mark.ToString());
+                                
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Test not foudn");
+                            }
+                        }
+                            break;
+                    }
             }
         }
+        MakeTest DeserialiseFromString(string str)
+        {
+            var serializer = new XmlSerializer(typeof(MakeTest));
+            MakeTest desr;
+
+            using (TextReader reader = new StringReader(str))
+            {
+                return desr = (MakeTest)serializer.Deserialize(reader);
+            }
+        }
+
+        //надсилання відповіді
         void SendAnswer(string answer, User client, MessageType info)
         {
             byte[] answerByte = Encoding.UTF8.GetBytes(answer);
             var infoAnswer = new TransferInfo(answerByte.Length, info);
             SendRegistrarion(client, infoAnswer, answerByte);
         }
+        //продавження надсилання відповіді
         void SendRegistrarion(User send, TransferInfo info, byte[] data)
         {
             send.SocketUser.Send(info.ToBytes());
             send.SocketUser.Send(data);
         }
+
+       //приховування відповідей
+        private string GetTestForSendStudent(int idTest)
+        {
+            using (ExamVceDB test = new ExamVceDB())
+            {
+                try
+                {
+                    var result = test.TestDBs.FirstOrDefault(i => i.ID == idTest);
+
+                    var serializer = new XmlSerializer(typeof(MakeTest));
+                    MakeTest desr;
+
+                    using (TextReader reader = new StringReader(result.Test))
+                    {
+                        desr = (MakeTest)serializer.Deserialize(reader);
+                    }
+
+                    //var jsonMakeTest = JsonConvert.SerializeObject(desr);
+                    //MakeTest testFromJson = JsonConvert.DeserializeObject<MakeTest>(jsonMakeTest);
+                    foreach (var item in desr.questions)
+                    {
+                        foreach (var a in item.answers)
+                        {
+                            if (a.IsCorrect)
+                                a.IsCorrect = !a.IsCorrect;
+                        }
+                    }
+                    //var readyResult = JsonConvert.SerializeObject(testFromJson);
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(MakeTest));
+
+                    using (StringWriter textWriter = new StringWriter())
+                    {
+                        xmlSerializer.Serialize(textWriter, desr);
+                        return textWriter.ToString();
+                    }
+                }catch
+                {
+                    MessageBox.Show("Test not foudn");
+                }
+                return "";
+               
+            }
+        }
+
+        
     }
 }

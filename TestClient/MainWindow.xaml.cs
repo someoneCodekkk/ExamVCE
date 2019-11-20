@@ -32,7 +32,7 @@ namespace TestClient
         List<List<TypeQuestion>> typeQuestions = new List<List<TypeQuestion>>();
 
         Socket server;
-        string ipAddressServer = "192.168.23.1";
+        string ipAddressServer = "192.168.43.175";
         int port = 7412;
 
         User Iam;
@@ -67,7 +67,7 @@ namespace TestClient
                 server.Connect(new IPEndPoint(serverIP, port));
 
                 server.Send(Encoding.UTF8.GetBytes(Iam.Login));
-                //Task.Run(() => ReceiveMessages());
+                Task.Run(() => ReceiveMessages());
             }
             catch (SocketException se)
             {
@@ -79,6 +79,7 @@ namespace TestClient
             }
 
         }
+        //надсилання повідомлення
         void SendMessage(string msg, MessageType type)
         {
             if (server == null)
@@ -90,6 +91,7 @@ namespace TestClient
             server.Send(data); //повідомлення
 
         }
+        //отримання повідомлення
         void ReceiveMessages()
         {
             try
@@ -124,16 +126,21 @@ namespace TestClient
                     {
                         case MessageType.Test:
                             {
-                                XmlSerializer serializer = new XmlSerializer(typeof(MakeTest));
-
-                                var reader = new StreamReader(memoryStream, Encoding.UTF8 );
-                                test = (MakeTest)serializer.Deserialize(reader);
-
-
-                                FillFild();
-                                FillRadioAnswer();
-                                FillQuestions();
-                                mainWindow.Children.Clear();
+                                var serializer = new XmlSerializer(typeof(MakeTest));
+                                //MakeTest desr;
+                                using (TextReader reader = new StringReader(recive))
+                                {
+                                    test = (MakeTest)serializer.Deserialize(reader);
+                                }
+                                Dispatcher.Invoke(() =>
+                                {
+                                    mainWindow.Children.Clear();
+                                    FillFild();
+                                    FillRadioAnswer();
+                                    FillQuestions();
+                                    EndExamButton.IsEnabled = true;
+                                });
+                                
                                 break;
                             }
                     }
@@ -159,12 +166,37 @@ namespace TestClient
         {
             //SendMessage();
         }
-
+        //Завершення екзамену надсилання відповідей
         private void EndExamButton_Click(object sender, RoutedEventArgs e)
         {
+            int i = 0;
+            int j = 0;
+            foreach (var item in test.questions)
+            {
+                foreach (var a in item.answers)
+                {
+                    if((typeQuestions[i][j] as RadioQuestion).Choose.IsChecked.Value)
+                    {
+                        a.IsCorrect = true;
+                    }
+                    j++;
+                }
+                i++;
+                j = 0;
+            }
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(MakeTest));
 
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, test);
+
+                //System.Windows.MessageBox.Show(textWriter.ToString());
+                SendMessage(textWriter.ToString(), MessageType.CheckTestFromStudent);
+            }
+            
+            
         }
-
+        //непотрібний вже метод був як тест
         private void ChooseStartExam_Click(object sender, RoutedEventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -178,8 +210,9 @@ namespace TestClient
                 test = (MakeTest)serializer.Deserialize(reader);
             }
             FillFild();
-            FillRadioAnswer();
             FillQuestions();
+            FillRadioAnswer();
+            
             mainWindow.Children.Clear();
         }
         void FillFild()
@@ -284,7 +317,7 @@ namespace TestClient
         private void GetExam_Click(object sender, RoutedEventArgs e)
         {
             SendMessage("get exam", MessageType.Test);
-            ReceiveMessages();
+            //ReceiveMessages();
         }
     }
 }

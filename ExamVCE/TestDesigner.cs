@@ -39,9 +39,6 @@ namespace ExamVCE
                         Question = textBoxAnswer.Text,
                         IsCorrect = checkBoxIsCorrectAnswer.Checked
                     });
-                    
-
-
                 }
             }
         }

@@ -12,5 +12,6 @@ namespace LibraryForTest
         public string NameTeacher { get; set; }
         public string Subject { get; set; }
         public List<Question> questions { get; set; }
+        public int IdTest { get; set; }
     }
 }

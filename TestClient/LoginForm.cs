@@ -20,7 +20,7 @@ namespace TestClient
     public partial class LoginForm : Form
     {
         Socket server;
-        string ipAddressServer = "192.168.23.1";
+        string ipAddressServer = "192.168.43.175";
         int port = 7412;
 
 
