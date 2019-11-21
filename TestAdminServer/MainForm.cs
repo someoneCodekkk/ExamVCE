@@ -612,7 +612,8 @@ namespace TestAdminServer
 
         private void ButtonShowPassExam_Click(object sender, EventArgs e)
         {
-
+            PassExams pass = new PassExams();
+            pass.ShowDialog();
         }
     }
 }
