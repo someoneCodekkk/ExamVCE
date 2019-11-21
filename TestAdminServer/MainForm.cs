@@ -63,7 +63,6 @@ namespace TestAdminServer
             switch (loginPerson.Status)
             {
                 case 1:
-                    comboBoxAct.Items.Add("Delete smn from DB");
                     comboBoxAct.Items.Add("Add student to DB");
                     comboBoxAct.Items.Add("Show smth");
                     break;

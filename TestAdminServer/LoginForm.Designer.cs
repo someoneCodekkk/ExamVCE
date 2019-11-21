@@ -62,6 +62,7 @@
             this.textBoxLogin.Name = "textBoxLogin";
             this.textBoxLogin.Size = new System.Drawing.Size(180, 26);
             this.textBoxLogin.TabIndex = 1;
+            this.textBoxLogin.Text = "roadstobe";
             // 
             // textBoxPassword
             // 
@@ -71,6 +72,7 @@
             this.textBoxPassword.PasswordChar = '=';
             this.textBoxPassword.Size = new System.Drawing.Size(180, 26);
             this.textBoxPassword.TabIndex = 1;
+            this.textBoxPassword.Text = "123";
             // 
             // buttonLogin
             // 

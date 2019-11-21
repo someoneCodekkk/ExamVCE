@@ -24,18 +24,28 @@ namespace TestAdminServer
         {
             using(ExamVceDB pass = new ExamVceDB())
             {
+                //var query = pass.PassExams.Join(pass.Students, c => c.Student.Name);
                 foreach (var item in pass.PassExams)
                 {
-                    ListViewItem i = new ListViewItem(item.ID.ToString());
-                    i.SubItems.Add(pass.Students.Where(q => q.ID == item.Id_Student).First().Name);
-                    //i.SubItems.Add(item.Id_Student.ToString());
-                    MakeTest test = DeserialiseFromString(pass.TestDBs.First(q => q.ID == item.Id_Test).Test);
-                    i.SubItems.Add(test.Subject);
-                    //i.SubItems.Add(item.Id_Test.ToString());
-                    i.SubItems.Add(item.Date_Pass.ToString());
-                    i.SubItems.Add(item.Mark.ToString());
+                    try
+                    {
 
-                    listViewPassExam.Items.Add(i);
+                        ListViewItem i = new ListViewItem(item.ID.ToString());
+                        var studentName = pass.Students.Where(q => q.ID == item.Id_Student).ToList();
+                        i.SubItems.Add(studentName[0].Name);
+                        string testForm = pass.TestDBs.First(q => q.ID == item.Id_Test).Test;
+                        MakeTest test = DeserialiseFromString(testForm);
+                        i.SubItems.Add(test.Subject);
+                        i.SubItems.Add(item.Date_Pass.ToString());
+                        i.SubItems.Add(item.Mark.ToString());
+
+                        listViewPassExam.Items.Add(i);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    
                 }
             }
         }
